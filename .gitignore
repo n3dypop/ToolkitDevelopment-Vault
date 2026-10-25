@@ -1,0 +1,6 @@
+.obsidian/
+.trash/
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
