@@ -15,11 +15,11 @@
 
 ### `AGENTS.md` の同期
 
-- `ToolkitDevelopment-Vault/AGENTS.md` を Git 管理する正本とし、Toolkit 直下の `AGENTS.md` はワークスペースでエージェントが読む同期コピーとする。
-- 正本を変更したら `./scripts/sync-agents.ps1 -Mode RepoToWorkspace` を実行し、`./scripts/sync-agents.ps1 -Mode Check` で同一性を確認する。
-- Toolkit 直下のコピーを先に変更した場合は、`-Mode WorkspaceToRepo` で正本へ取り込み、差分をレビューしてからコミットする。自動的に新しい方を選んで上書きしない。
-- clone 先が Toolkit 直下でない場合、親ディレクトリを推測して変更しない。同期が必要なら `-WorkspaceRoot` で対象を明示する。
-- symlink や hardlink は、Windows の権限、Git checkout、clone 先の配置で壊れ得るため同期手段にしない。
+- このリポジトリ直下の `AGENTS.md` を Git 管理する正本、Toolkit 直下の `AGENTS.md` を同期コピーとする。対象はこの2ファイルに限定し、さらに上位の開発フォルダや Codex の個人設定を変更しない。
+- Vault ルートで `python3 scripts/sync-agents.py --mode Check` を実行して差分を確認する。反映方向を選び、必要なら `--dry-run` で予定を確認してから `RepoToWorkspace` または `WorkspaceToRepo` を実行する。Windows では `scripts/sync-agents.ps1` の同名 Mode を使う。
+- Toolkit 直下のコピーを先に変更した場合は、逆方向で正本へ取り込み、差分をレビューしてからコミットする。更新時刻から新しい方を自動選択しない。
+- 親ディレクトリが Toolkit でない配置では停止する。別配置では `--workspace-root` または `-WorkspaceRoot` で対象を明示する。symlink や hardlink を同期手段にしない。
+- 異なる既存内容は上書き前に退避する。同じ内容なら書き込まない。同期後に Check を通す。詳細は Vault 内の `guides/instruction-synchronization.md` を参照する。
 
 ## 自律判断と確認の境界
 
@@ -73,6 +73,7 @@
 ## ドキュメントの言語
 
 - GitHub リポジトリの説明文と、公開用の `README.md`、API ドキュメント、その他の公開ドキュメントは英語で記載する。パッケージ情報の説明文も英語に揃える。
+- 再利用ノウハウを集める ToolkitDevelopment-Vault 自体のガイド・パターン・テンプレートは日本語を基本とする。元資料の固有名・実測値・内部パス・機密情報を取り込まず、適用条件と検証方法へ一般化する。
 - `Closed/<プロジェクト名>/` 配下の調査資料、性能レポート、作業資料、検証手順は日本語で記載する。`Closed/` の共通索引も日本語とする。
 - コード例・識別子・実行ログは元の表記を使う。第三者のライセンス・許諾文や、履歴保存用の原本・スナップショットは改変せず保持する。
 

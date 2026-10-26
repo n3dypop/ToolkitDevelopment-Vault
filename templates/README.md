@@ -13,3 +13,4 @@ status: active
 - [DESIGN.template.md](DESIGN.template.md): 設計と重要判断
 - [VALIDATION.template.md](VALIDATION.template.md): 検証条件と結果
 - [HANDOFF.template.md](HANDOFF.template.md): 中断・担当交代時の再開情報
+- [RELEASE.template.md](RELEASE.template.md): 配布物の由来、単独利用、公開状況

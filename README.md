@@ -23,28 +23,26 @@ ToolkitDevelopment-Vault は、Toolkit Development に属する文書プロジ�
 
 ## 保守
 
-PowerShell 7 で次を実行すると、Markdown のリンク、見出し、絶対パス、末尾空白を確認できます。
+Python 3.11 以降で次を実行すると、リンク、見出し、端末固有の絶対パス、末尾空白、HOME から active 文書への到達性を確認できます。外部 Python パッケージは不要です。
 
-```powershell
-./scripts/check-vault.ps1
+```sh
+python3 scripts/check-vault.py
+python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
+
+Windows では PowerShell 7 の `./scripts/check-vault.ps1` も同じ検査を呼び出します。GitHub Actions は Windows / macOS / Linux で文書検査と回帰テストを行います。
 
 ### Toolkit の `AGENTS.md` と同期する
 
-Git 管理される正本は、このリポジトリ直下の `AGENTS.md` です。Toolkit 直下の `AGENTS.md` は、ワークスペース全体でエージェントが読む同期コピーです。
+正本はこのリポジトリ直下の `AGENTS.md`、コピーは親 Toolkit 直下の同名ファイルです。対象はこの2ファイルだけです。
 
-```powershell
-# 同一性を確認
-./scripts/sync-agents.ps1 -Mode Check
-
-# リポジトリの正本を Toolkit 直下へ反映
-./scripts/sync-agents.ps1 -Mode RepoToWorkspace
-
-# Toolkit 直下で先に行われた変更を正本へ取り込む
-./scripts/sync-agents.ps1 -Mode WorkspaceToRepo
+```sh
+python3 scripts/sync-agents.py --mode Check
+python3 scripts/sync-agents.py --mode RepoToWorkspace --dry-run
+python3 scripts/sync-agents.py --mode RepoToWorkspace
 ```
 
-リポジトリが Toolkit 直下にない場合、書き込みモードは停止します。別配置で同期するときだけ `-WorkspaceRoot` を明示してください。
+コピーを先に編集した場合は `--mode WorkspaceToRepo` で取り込み、差分をレビューします。Windows の `scripts/sync-agents.ps1` は従来の `-Mode` と `-WorkspaceRoot` を維持します。別配置、バックアップ、復旧、指針の適用範囲は[同期手順](guides/instruction-synchronization.md)を参照してください。
 
 ## ライセンス
 

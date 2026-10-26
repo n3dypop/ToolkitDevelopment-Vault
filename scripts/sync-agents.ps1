@@ -2,51 +2,23 @@
 param(
     [ValidateSet('Check', 'RepoToWorkspace', 'WorkspaceToRepo')]
     [string]$Mode = 'Check',
-
-    [string]$WorkspaceRoot
+    [string]$WorkspaceRoot,
+    [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$repoAgents = Join-Path $repoRoot 'AGENTS.md'
-
-if ([string]::IsNullOrWhiteSpace($WorkspaceRoot)) {
-    $candidate = Split-Path $repoRoot -Parent
-    if ((Split-Path $candidate -Leaf) -ne 'Toolkit') {
-        throw 'The repository is not directly under Toolkit. Specify -WorkspaceRoot explicitly.'
-    }
-    $WorkspaceRoot = $candidate
-}
-
-$resolvedWorkspaceRoot = (Resolve-Path -LiteralPath $WorkspaceRoot).Path
-$workspaceAgents = Join-Path $resolvedWorkspaceRoot 'AGENTS.md'
-
-function Get-AgentsHash {
-    param([Parameter(Mandatory)][string]$Path)
-
-    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-        throw "AGENTS.md is missing: $Path"
-    }
-
-    return (Get-FileHash -Algorithm SHA256 -LiteralPath $Path).Hash
-}
-
-switch ($Mode) {
-    'RepoToWorkspace' {
-        Get-AgentsHash -Path $repoAgents | Out-Null
-        Copy-Item -LiteralPath $repoAgents -Destination $workspaceAgents -Force
-    }
-    'WorkspaceToRepo' {
-        Get-AgentsHash -Path $workspaceAgents | Out-Null
-        Copy-Item -LiteralPath $workspaceAgents -Destination $repoAgents -Force
+$python = $null
+foreach ($name in @('python', 'python3', 'py')) {
+    $candidate = Get-Command $name -CommandType Application -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if ($null -ne $candidate) {
+        & $candidate.Source -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)' 2>$null
+        if ($LASTEXITCODE -eq 0) { $python = $candidate; break }
     }
 }
-
-$repoHash = Get-AgentsHash -Path $repoAgents
-$workspaceHash = Get-AgentsHash -Path $workspaceAgents
-
-if ($repoHash -ne $workspaceHash) {
-    throw "AGENTS.md is out of sync. Repo=$repoHash Workspace=$workspaceHash"
-}
-
-Write-Host "AGENTS.md is synchronized: $repoHash"
+if ($null -eq $python) { throw 'Python 3.11 or later is required.' }
+$arguments = @((Join-Path $PSScriptRoot 'sync-agents.py'), '--mode', $Mode)
+if ($WorkspaceRoot) { $arguments += @('--workspace-root', $WorkspaceRoot) }
+if ($DryRun) { $arguments += '--dry-run' }
+& $python.Source @arguments
+if ($LASTEXITCODE -ne 0) { throw "Agent synchronization failed (exit $LASTEXITCODE)." }

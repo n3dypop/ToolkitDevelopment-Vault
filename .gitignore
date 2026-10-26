@@ -4,3 +4,5 @@
 Thumbs.db
 *.tmp
 *.bak
+__pycache__/
+*.py[cod]

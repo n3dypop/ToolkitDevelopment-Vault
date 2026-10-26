@@ -62,9 +62,11 @@ GitHub リポジトリの短い説明は `Reusable development guides, patterns,
 
 ## `AGENTS.md` の同期モデル
 
-リポジトリ直下の `AGENTS.md` を Git 管理する正本とする。Toolkit 直下の `AGENTS.md` は同じ内容のワークスペース投影であり、エージェントが Toolkit 配下の全プロジェクトで共通指針を読めるようにする。
+リポジトリ直下の `AGENTS.md` を Git 管理する正本、Toolkit 直下の同名ファイルをワークスペースコピーとする。対象はこの2ファイルだけとする。同期と指針の読み込みは別問題であり、子の Git リポジトリで親指針が自動適用されるとは限らない。
 
-同期は [sync-agents.ps1](scripts/sync-agents.ps1) で明示的に行う。通常は正本からワークスペースへ反映し、逆方向は Toolkit 直下のファイルが先に編集された場合だけ使う。check は両ファイルの SHA-256 を比較し、drift があれば失敗する。symlink と hardlink は利用しない。
+同期の実装は標準ライブラリのみの Python に集約し、POSIX shell と PowerShell は同じ処理を呼ぶ。方向指定、読み取り専用の確認・dry-run、元バイトの保持、上書き前の退避、単一ファイルの原子的置換を行う。更新時刻による競合解消や自動スケジュール登録は行わない。別配置の対象は明示し、symlink・hardlink は拒否する。
+
+使い方と制約は[指針の同期](guides/instruction-synchronization.md)に置く。自動検証では一時ディレクトリだけを使い、利用者の実際の指針や外部サービスを操作しない。
 
 ## 状態と品質
 
@@ -97,12 +99,12 @@ GitHub リポジトリの短い説明は `Reusable development guides, patterns,
 2. 既存ガイドに同じ判断がないか探し、重複なら追記ではなく統合する。
 3. 事実を一般化するとき、成立条件、失敗条件、未検証事項を残す。
 4. 文書種別に応じてガイド、パターン、テンプレートを更新する。
-5. `./scripts/check-vault.ps1` を実行し、差分を読み直す。
+5. `python3 scripts/check-vault.py` と `python3 -m unittest discover -s scripts -p 'test_*.py'` を実行し、差分を読み直す。
 
 ## 受け入れ条件
 
 - HOME から全 active 文書へ到達できる。
-- 相対リンク切れ、Windows の絶対パス、末尾空白がない。
+- 相対リンク切れ、端末固有の Windows / POSIX 絶対パス、末尾空白がない。
 - テンプレートが固有名や固有値を含まない。
 - 各パターンに「使う条件」「使わない条件」「確認方法」がある。
 - 元文書を見なくても、採用判断に必要な境界と未確定事項が分かる。
