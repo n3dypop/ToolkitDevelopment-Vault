@@ -1,12 +1,12 @@
 ---
-title: N3dy Toolkit Development Vault Home
+title: ToolkitDevelopment-Vault Home
 tags:
   - home
   - knowledge-base
 status: active
 ---
 
-# N3dy Toolkit Development Vault
+# ToolkitDevelopment-Vault
 
 ここは、Toolkit Development の横断知識をエージェントが育て、n3dypop が Obsidian で読むための入口です。
 

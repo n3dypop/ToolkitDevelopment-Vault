@@ -1,4 +1,4 @@
-# N3dy Toolkit Development Vault を保守するエージェントへ
+# ToolkitDevelopment-Vault を保守するエージェントへ
 
 ## 適用範囲
 

@@ -1,18 +1,18 @@
 ---
-title: N3dy Toolkit Development Vault Design
+title: ToolkitDevelopment-Vault Design
 tags:
   - design
   - governance
 status: active
 ---
 
-# N3dy Toolkit Development Vault の設計
+# ToolkitDevelopment-Vault の設計
 
 ## 名称
 
-リポジトリ名は `n3dy-toolkit-dev-vault`、表示名は `N3dy Toolkit Development Vault` とする。`n3dy` が n3dypop のプロジェクトであること、`toolkit-dev` が Toolkit Development 配下の横断プロジェクトであること、`vault` が Obsidian を主な閲覧面とする知識庫であることを表す。
+リポジトリ名と表示名は `ToolkitDevelopment-Vault` とする。`ToolkitDevelopment` が Toolkit 配下の開発横断プロジェクトであること、`Vault` が Obsidian を主な閲覧面とする知識庫であることを表す。
 
-候補には `toolkit-development-vault` と `n3dy-toolkit-atlas` もあった。前者は所有者の識別性が弱く、後者は保管庫であることが伝わりにくいため採用しなかった。内容は標準 Markdown とし、Obsidian 固有機能へロックインしない。
+GitHub リポジトリの短い説明は `Reusable development guides, patterns, and templates distilled from Toolkit projects.` とする。内容は標準 Markdown とし、Obsidian 固有機能へロックインしない。
 
 ## 目的
 

@@ -1,6 +1,8 @@
-# N3dy Toolkit Development Vault
+# ToolkitDevelopment-Vault
 
-N3dy Toolkit Development Vault は、Toolkit Development に属する文書プロジェクトです。Toolkit 配下にある複数プロジェクトの `AGENTS.md`、`DESIGN.md`、検証記録、引継ぎ文書から、再利用できる判断基準と文書テンプレートを抽出します。リポジトリ全体を Obsidian Vault として開けますが、標準 Markdown のリンクだけを使うため GitHub でも読めます。
+Reusable development guides, patterns, and templates distilled from Toolkit projects.
+
+ToolkitDevelopment-Vault は、Toolkit Development に属する文書プロジェクトです。Toolkit 配下にある複数プロジェクトの `AGENTS.md`、`DESIGN.md`、検証記録、引継ぎ文書から、再利用できる判断基準と文書テンプレートを抽出します。リポジトリ全体を Obsidian Vault として開けますが、標準 Markdown のリンクだけを使うため GitHub でも読めます。
 
 ## 収録するもの
 
