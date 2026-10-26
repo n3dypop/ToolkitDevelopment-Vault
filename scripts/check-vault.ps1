@@ -12,12 +12,15 @@ foreach ($file in $markdownFiles) {
     $content = Get-Content -LiteralPath $file.FullName -Raw
     $lines = Get-Content -LiteralPath $file.FullName
 
-    $h1Count = @($lines | Where-Object { $_ -match '^# ' }).Count
-    if ($h1Count -ne 1) {
-        $errors.Add("$relative`: expected exactly one H1, found $h1Count")
-    }
-
+    $h1Count = 0
+    $insideFence = $false
     for ($index = 0; $index -lt $lines.Count; $index++) {
+        if ($lines[$index] -match '^\s*(```|~~~)') {
+            $insideFence = -not $insideFence
+        } elseif (-not $insideFence -and $lines[$index] -match '^# ') {
+            $h1Count++
+        }
+
         if ($lines[$index] -match '[ \t]+$') {
             $errors.Add("$relative`:$($index + 1): trailing whitespace")
         }
@@ -43,6 +46,20 @@ foreach ($file in $markdownFiles) {
         if (-not (Test-Path -LiteralPath $resolvedTarget)) {
             $errors.Add("$relative`: broken link '$target'")
         }
+    }
+
+    if ($h1Count -ne 1) {
+        $errors.Add("$relative`: expected exactly one H1, found $h1Count")
+    }
+}
+
+$workspaceAgents = Join-Path (Split-Path $root -Parent) 'AGENTS.md'
+$repoAgents = Join-Path $root 'AGENTS.md'
+if (Test-Path -LiteralPath $workspaceAgents) {
+    $workspaceHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $workspaceAgents).Hash
+    $repoHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $repoAgents).Hash
+    if ($workspaceHash -ne $repoHash) {
+        $errors.Add('AGENTS.md differs from the Toolkit workspace copy; run scripts/sync-agents.ps1 explicitly.')
     }
 }
 

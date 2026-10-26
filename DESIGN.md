@@ -60,6 +60,12 @@ GitHub リポジトリの短い説明は `Reusable development guides, patterns,
 
 詳細は[文書システム](guides/document-system.md)を参照する。
 
+## `AGENTS.md` の同期モデル
+
+リポジトリ直下の `AGENTS.md` を Git 管理する正本とする。Toolkit 直下の `AGENTS.md` は同じ内容のワークスペース投影であり、エージェントが Toolkit 配下の全プロジェクトで共通指針を読めるようにする。
+
+同期は [sync-agents.ps1](scripts/sync-agents.ps1) で明示的に行う。通常は正本からワークスペースへ反映し、逆方向は Toolkit 直下のファイルが先に編集された場合だけ使う。check は両ファイルの SHA-256 を比較し、drift があれば失敗する。symlink と hardlink は利用しない。
+
 ## 状態と品質
 
 再利用文書の状態は次の四つに限定する。

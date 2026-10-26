@@ -29,6 +29,23 @@ PowerShell 7 で次を実行すると、Markdown のリンク、見出し、絶�
 ./scripts/check-vault.ps1
 ```
 
+### Toolkit の `AGENTS.md` と同期する
+
+Git 管理される正本は、このリポジトリ直下の `AGENTS.md` です。Toolkit 直下の `AGENTS.md` は、ワークスペース全体でエージェントが読む同期コピーです。
+
+```powershell
+# 同一性を確認
+./scripts/sync-agents.ps1 -Mode Check
+
+# リポジトリの正本を Toolkit 直下へ反映
+./scripts/sync-agents.ps1 -Mode RepoToWorkspace
+
+# Toolkit 直下で先に行われた変更を正本へ取り込む
+./scripts/sync-agents.ps1 -Mode WorkspaceToRepo
+```
+
+リポジトリが Toolkit 直下にない場合、書き込みモードは停止します。別配置で同期するときだけ `-WorkspaceRoot` を明示してください。
+
 ## ライセンス
 
 [MIT License](LICENSE)。案件固有の元文書や第三者資料には、それぞれの権利条件が引き続き適用されます。
