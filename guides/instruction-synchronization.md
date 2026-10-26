@@ -17,23 +17,25 @@ status: active
 
 ## 必要環境
 
-Python 3.11 以降。外部 Python パッケージは不要。Windows のラッパーは PowerShell 7 を使う。従来の PowerShell 版を使っていた環境にも Python が必要になる。
+macOS/Linux は POSIX Shell と OS の標準コマンド（`cmp`、`cp`、`mv`、`mktemp`、`stat`、`iconv` など）、Windows は PowerShell 7 を使う。同期処理に Python や外部パッケージは不要。最小構成の Linux では標準コマンドの有無を確認し、不足していれば実行前にエラーにする。
+
+文書検査と回帰テストを実行する保守担当者には Python 3.11 以降が必要だが、同期処理からは呼び出さない。
 
 ## macOS / Linux
 
 ```sh
 # 確認のみ。差分または欠落があれば終了コード1
-python3 scripts/sync-agents.py --mode Check
+sh scripts/sync-agents.sh --mode Check
 
 # 正本から反映する前に変更予定を確認
-python3 scripts/sync-agents.py --mode RepoToWorkspace --dry-run
-python3 scripts/sync-agents.py --mode RepoToWorkspace
+sh scripts/sync-agents.sh --mode RepoToWorkspace --dry-run
+sh scripts/sync-agents.sh --mode RepoToWorkspace
 
 # コピーを先に編集した場合だけ、正本へ取り込む
-python3 scripts/sync-agents.py --mode WorkspaceToRepo
+sh scripts/sync-agents.sh --mode WorkspaceToRepo
 ```
 
-同じ引数を `sh scripts/sync-agents.sh` へ渡してもよい。ラッパーは呼び出し元のカレントディレクトリに依存しない。
+スクリプトは呼び出し元のカレントディレクトリに依存しない。
 
 ## Windows
 
@@ -44,12 +46,12 @@ python3 scripts/sync-agents.py --mode WorkspaceToRepo
 ./scripts/sync-agents.ps1 -Mode WorkspaceToRepo
 ```
 
-親ディレクトリ名が Toolkit でない配置では、確認・書込とも停止する。対象を理解している場合だけ Python の `--workspace-root` または PowerShell の `-WorkspaceRoot` で既存の対象ディレクトリを明示する。任意のディレクトリから呼び出す場合は、スクリプトのパスも指定する。
+親ディレクトリ名が Toolkit でない配置では、確認・書込とも停止する。対象を理解している場合だけ Shell の `--workspace-root` または PowerShell の `-WorkspaceRoot` で既存の対象ディレクトリを明示する。任意のディレクトリから呼び出す場合は、スクリプトのパスも指定する。
 
 ## 競合と復旧
 
 - Check と dry-run はファイル・ディレクトリ・バックアップを作らない。
-- UTF-8 の元バイトを保持し、SHA-256 で比較する。LF/CRLF の違いも差分になる。
+- UTF-8 の元バイトを保持し、内容をバイト単位で比較する。LF/CRLF の違いも差分になる。
 - 内容が異なる既存ファイルは、同じ場所へ一意な名前の `.bak` を退避してから一時ファイル経由で置き換える。同じ内容なら書き込まない。
 - 不在のコピーは書込モードで作れる。存在する空・不正な UTF-8 のファイルや、symlink・hardlink は拒否する。
 - 正本とコピーを同じ実ファイルへ指定しない。書込直前に観測できた変更も拒否する。

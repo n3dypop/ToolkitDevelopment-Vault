@@ -2,6 +2,7 @@
 """Check portable Markdown structure, links, and public path hygiene."""
 
 import argparse
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -87,9 +88,10 @@ def main():
     if workspace is None and root.parent.name.casefold() == "toolkit" and (root.parent / "AGENTS.md").exists():
         workspace = str(root.parent)
     if workspace:
-        command = [sys.executable, str(root / "scripts/sync-agents.py")]
+        command = (["pwsh", "-NoProfile", "-File", str(root / "scripts/sync-agents.ps1")] if os.name == "nt" else
+                   ["sh", str(root / "scripts/sync-agents.sh")])
         if workspace:
-            command.extend(["--workspace-root", workspace])
+            command.extend(["-WorkspaceRoot", workspace])
         result = subprocess.run(command, check=False)
         if result.returncode:
             return result.returncode
