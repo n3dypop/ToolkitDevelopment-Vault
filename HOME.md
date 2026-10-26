@@ -17,6 +17,7 @@ status: active
 3. [作業領域と公開境界](guides/workspace-and-publication.md)
 4. [引継ぎと終了](guides/handoff-and-closure.md)
 5. [配布物の由来と単独利用](guides/artifact-verification.md)
+6. [調査を採用判断へつなぐ](guides/research-and-selection.md)
 
 ## 再利用パターン
 
@@ -27,6 +28,8 @@ status: active
 - [再起動を考慮した通知と外部操作](patterns/restart-safe-notifications.md)
 - [複数の表示面で状態の意味を揃える](patterns/shared-state-presentation.md)
 - [自動推奨を再利用可能な設定にする](patterns/explainable-configuration.md)
+- [逐次処理の上限と中断時の後始末](patterns/bounded-streaming-and-cleanup.md)
+- [出力先の文法と文字位置](patterns/context-safe-output.md)
 
 ## 新規プロジェクトで使う
 
